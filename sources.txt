@@ -1,0 +1,2 @@
+[Clickable grid inspiration: https://github.com/DanielSchussmann/GameOfLifeSchussmann/blob/master/main.py ]
+[Functionality inspiration: https://beltoforion.de/en/recreational_mathematics/game_of_life.php]
