@@ -13,7 +13,7 @@ def __init__(self):
         self.margin = 1
         self.speed=10
 ~~~
-~~~{python}
+~~~{.python}
 def __init__(self):
         self.n = 20
         self.width = 10
