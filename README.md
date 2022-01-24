@@ -7,6 +7,11 @@ import numpy as np
 ~~~
 
 ### Gerneral Functionality
+Run the code, the input window appears.
+Select all the cells to activated.
+Close the window. 
+The output window appears and runs the simmulation.
+
 
 The application is run in 'custom mode' by calling the GameOfLife() class and then calling the input() method:
 ~~~
