@@ -1,105 +1,109 @@
 import pygame
 import numpy as np
-
+import pickle
 
 
 class GameOfLife():
     def __init__(self):
-        self.n = 30         # Number of Rows and Columns so nxn
-        self.width = 10     # Width of a cell
-        self.height = 10    # height of a cell
-        self.margin = 1     # margin between the cells
-        self.speed=10       # Update speed
+        self.n = 30
+        self.width = 10
+        self.height = 10
+        self.margin = 1
+        self.speed=10
 
-    def _next_grid(self, grid):     # Function is privat because it is only accessed within the class
-        current_grid=grid           # Set the current grid to the incoming input
+    def _next_grid(self, grid):
+        current_grid=grid
+        next_grid= np.zeros((current_grid.shape[0], current_grid.shape[1]))
+        for row, column in np.ndindex(current_grid.shape):
+            currently_alive = np.sum(current_grid[row - 1:row + 2, column - 1:column + 2]) - current_grid[row, column]
 
-        for row, column in np.ndindex(current_grid.shape):  # Loops through all the values
-            currently_alive = np.sum(current_grid[row - 1:row + 2, column - 1:column + 2]) - current_grid[row, column]  # Retreive the values of the neighboring cells
+            if current_grid[row, column] == 1 and currently_alive < 2 or currently_alive > 3:
+               next_grid[row, column] = 0
 
-            if current_grid[row, column] == 1 and currently_alive < 2 or currently_alive > 3:   # Check if cell should "die"
-               current_grid[row, column] = 0                # Set value to 0
+            elif current_grid[row, column] == 0 and  currently_alive == 3:
+               next_grid[row, column] = 1
 
-            elif (current_grid[row, column] == 0 and  currently_alive == 3):                    # Check if the cell should be revived
-                current_grid[row, column] = 1               # Set value to 1
+            elif current_grid[row, column] == 1 and  2<= currently_alive <= 3:
+               next_grid[row, column] = 1
 
-        next_grid = current_grid
-        return next_grid            # Returns the updated grid back to the output
+        return next_grid
 
 
-    def output(self,values):    # Call directly if no Input is wanted
-        pygame.init()           # Initializes the pygame environment
-        display = pygame.display.set_mode((self.n * (self.width + self.margin), self.n * (self.height + self.margin)))  # Set the displaysize in accordance to the cell count
-        pygame.display.set_caption("Game of life output")   # Set the window Title
+    def output(self,values):
+        pygame.init()
+        display = pygame.display.set_mode((self.n * (self.width + self.margin), self.n * (self.height + self.margin)))
+        pygame.display.set_caption("Game of life output")
 
-        grid = values           # This sets the starting grid
+        grid = values
+        print(values.shape)
         done = False
-        while not done:         # Loops until variable done is set to be True
+        while not done:
 
-            for event in pygame.event.get():        # Runs if the window is closed
+            for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    done = True                     # Exit the loop
+                    done = True
 
-            display.fill((25, 25, 25))      # This creates the grid effect as the rectangels are merely spaced appart. Without this there would be no grid
+            display.fill((25, 25, 25))
 
-            for row in range(self.n):       # This loop colors in all the cells according to their value in either white if == 1 or black if == 0
+            for row in range(self.n):
                 for column in range(self.n):
                     pygame.draw.rect(display, (255,255,255) if grid[row][column] == 1 else (0,0,0),
                                      [self.margin + (self.margin + self.width) * column,
                                       self.margin + (self.margin + self.height) * row, self.width, self.height])
 
-            grid = self._next_grid(grid)            # Get the next step
+            grid = self._next_grid(grid)
 
 
-            pygame.display.update()                 # Updates the window
-            pygame.time.Clock().tick(self.speed)    # Speed in which the application updates
+            pygame.display.update()
+            pygame.time.Clock().tick(self.speed)
 
-        pygame.quit()           # Is required so that there is no error message
+        pygame.quit()
 
 
-    def input(self):    # Call if a custom input should be defined
-        pygame.init()   # Initializes the pygame environment
+    def input(self):
+        pygame.init()
 
-        display = pygame.display.set_mode((self.n * (self.width + self.margin),self.n * (self.height + self.margin)))   # Set the displaysize in accordance to the cell count
-        pygame.display.set_caption("Game of life Input")            # Set the window Title
+        display = pygame.display.set_mode((self.n * (self.width + self.margin),self.n * (self.height + self.margin)))
+        pygame.display.set_caption("Game of life Input")
 
-        grid = [[0 for x in range(self.n)] for y in range(self.n)]  # Fills a grid of size nxn with zeros
+        grid = [[0 for x in range(self.n)] for y in range(self.n)]
 
         done = False
-        while not done:                     # loops until variable done is set to be True
+        while not done:
 
-            position = pygame.mouse.get_pos()   # the mouse position within the application
+            position = pygame.mouse.get_pos()
 
-            for event in pygame.event.get():    # Runs if the window is closed
+            for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    grid = np.array(grid)       # Turn the grid into an array so it can be manipulated by numpy
-                    self.output(grid)           # Call the output method with the highlighted grid
-                    done = True                 # Terminate the while loop
+                    grid = np.array(grid)
+                    self.output(grid)
+                    done = True
 
-                elif event.type == pygame.MOUSEBUTTONDOWN:              # Runs if the mouse is clicked
-                    column = position[0] // (self.width + self.margin)  # Gets the  colume and row inde of the nearest cell to the mouse cursor
-                    row = position[1] // (self.height + self.margin)    # Gets the  colume and row inde of the nearest cell to the mouse cursor
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    column = position[0] // (self.width + self.margin)
+                    row = position[1] // (self.height + self.margin)
                     #print(row, column)
-                    grid[row][column] = 1                                # Sets the value of the grid to 1 if clicked
+                    grid[row][column] = 1
 
-            display.fill((0,0,0))           # This creates the grid effect as the rectangels are merely spaced appart. Without this there would be no grid
+            display.fill((0,0,0))
 
-            for row in range(self.n):       # This loop colors in all the cells according to their value in either red if == 1 or white if == 0
+            for row in range(self.n):
                 for column in range(self.n):
                     pygame.draw.rect(display, (200,10,0) if grid[row][column] == 1 else (255,255,255),
                                      [self.margin + (self.margin + self.width) * column,
                                       self.margin + (self.margin + self.height) * row, self.width, self.height])
-            pygame.display.flip()           # Updates the window so highlighted cells appear
-            pygame.time.Clock().tick(60)    # speed in which the application updates
+            pygame.display.flip()
+            pygame.time.Clock().tick(60)
 
 
-        pygame.quit()   # Is required so that there is no error message
+        pygame.quit()
 
 
 
 #-Input any cell config
 custom = GameOfLife()
-custom.n = 60
+custom.n = 40
+custom.speed = 5
 custom.input()
 
 
