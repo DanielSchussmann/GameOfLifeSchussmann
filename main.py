@@ -35,7 +35,11 @@ class GameOfLife():
         pygame.display.set_caption("Game of life output")
 
         grid = values
-        print(values.shape)
+
+        for i in grid:
+            print(i)
+
+
         done = False
         while not done:
 
@@ -103,7 +107,6 @@ class GameOfLife():
 #-Input any cell config
 custom = GameOfLife()
 custom.n = 40
-custom.speed = 5
+custom.speed = 10
 custom.input()
-
 

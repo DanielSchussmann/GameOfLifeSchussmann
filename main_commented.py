@@ -12,19 +12,22 @@ class GameOfLife():
         self.speed=10       # Update speed
 
     def _next_grid(self, grid):     # Function is privat because it is only accessed within the class
-        current_grid=grid           # Set the current grid to the incoming input
+        current_grid = grid
+        next_grid = np.zeros((current_grid.shape[0], current_grid.shape[1]))
 
-        for row, column in np.ndindex(current_grid.shape):  # Loops through all the values
-            currently_alive = np.sum(current_grid[row - 1:row + 2, column - 1:column + 2]) - current_grid[row, column]  # Retreive the values of the neighboring cells
+        for row, column in np.ndindex(current_grid.shape):  # Returns a set of all combinations of x and y
+            currently_alive = np.sum(current_grid[row - 1:row + 2, column - 1:column + 2]) - current_grid[row, column] # Calculates the neighborsum
 
-            if current_grid[row, column] == 1 and currently_alive < 2 or currently_alive > 3:   # Check if cell should "die"
-               current_grid[row, column] = 0                # Set value to 0
+            if current_grid[row, column] == 1 and currently_alive < 2 or currently_alive > 3: # If there are less than two or more than 3 alive cells kill this cell
+                next_grid[row, column] = 0
 
-            elif (current_grid[row, column] == 0 and  currently_alive == 3):                    # Check if the cell should be revived
-                current_grid[row, column] = 1               # Set value to 1
+            elif current_grid[row, column] == 0 and currently_alive == 3: # If there are exactly 3 cells bordering a dead Cell revive it
+                next_grid[row, column] = 1
 
-        next_grid = current_grid
-        return next_grid            # Returns the updated grid back to the output
+            elif current_grid[row, column] == 1 and 2 <= currently_alive <= 3: # If there are two or 3 cells neighboring a alive cell it lives
+                next_grid[row, column] = 1
+
+        return next_grid #the updated grid back to the output
 
 
     def output(self,values):    # Call directly if no Input is wanted
@@ -33,6 +36,15 @@ class GameOfLife():
         pygame.display.set_caption("Game of life output")   # Set the window Title
 
         grid = values           # This sets the starting grid
+
+
+        # I used the following to copy the array code
+
+        #for i in grid:
+        #    print(i)
+
+
+
         done = False
         while not done:         # Loops until variable done is set to be True
 
@@ -100,6 +112,7 @@ class GameOfLife():
 #-Input any cell config
 custom = GameOfLife()
 custom.n = 60
-custom.input()"""
+custom.input()
+"""
 
 
