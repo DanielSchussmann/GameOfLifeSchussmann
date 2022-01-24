@@ -1,10 +1,13 @@
 # GameOfLifeSchussmann
 
-#### Inports
-´´´{python}
+#### Imports
+~~~
 import pygame
 import numpy as np
-´´´
+~~~
+
+
+#### Intitial Variables
 ~~~
 def __init__(self):
         self.n = 20
