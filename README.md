@@ -22,7 +22,7 @@ custom.output(Example_matrix)
 ~~~
 
 
-# Before calling input() or output() all the constructors can be changed:
+#### Before calling input() or output() all the constructors can be changed:
 
 Change the number of cells with:
 ~~~
